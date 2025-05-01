@@ -1,15 +1,15 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const fileUpload = require("express-fileupload");
-const bodyParser = require("body-parser");
+// const fileUpload = require("express-fileupload");
+// const bodyParser = require("body-parser");
 const UserModel = require("./models/Users.js");
 // const { GoogleGenerativeAI } = require("@google/generative-ai");  // Removed Google Generative AI
 // const { GoogleAIFileManager } = require("@google/generative-ai/server"); // Removed Google AI File Manager
 const pdfParse = require("pdf-parse");
 const fs = require("fs");
-const multer = require("multer");
-const path = require("path");
+// const multer = require("multer");
+// const path = require("path");
 const { Groq } = require("groq-sdk"); // Added Groq import
 
 const app = express();
@@ -20,7 +20,7 @@ require("dotenv").config();
 app.use(cors());
 
 app.use(express.json());
-app.use(bodyParser.json({ limit: "5000mb" })); // Handle large base64 payloads
+// app.use(bodyParser.json({ limit: "5000mb" })); // Handle large base64 payloads
 app.use(express.urlencoded({ limit: "5000mb", extended: true })); // Parse URL-encoded data
 
 const mongobd = process.env.MONGO_URL;
