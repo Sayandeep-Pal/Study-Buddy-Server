@@ -41,25 +41,25 @@ const groq = new Groq({ apiKey: GROQ_API_KEY }); // Initialized Groq Client
 //   model: "gemini-1.5-flash",
 // });
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, "uploads")); // Store in 'server/uploads'
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  },
-});
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, path.join(__dirname, "uploads")); // Store in 'server/uploads'
+//   },
+//   filename: (req, file, cb) => {
+//     cb(null, `${Date.now()}-${file.originalname}`);
+//   },
+// });
 
-const upload = multer({
-  storage: storage,
-  fileFilter: (req, file, cb) => {
-    if (file.mimetype === "application/pdf") {
-      cb(null, true);
-    } else {
-      cb(new Error("Only PDF files are allowed!"), false);
-    }
-  },
-});
+// const upload = multer({
+//   storage: storage,
+//   fileFilter: (req, file, cb) => {
+//     if (file.mimetype === "application/pdf") {
+//       cb(null, true);
+//     } else {
+//       cb(new Error("Only PDF files are allowed!"), false);
+//     }
+//   },
+// });
 
 // Helper: Convert file to generative part for Google API
 // function cleanAndValidatePDF(fileBuffer) {
@@ -129,9 +129,9 @@ app.get("/", (req, res) => {
 const bcrypt = require("bcryptjs"); // Import bcrypt for password hashing
 
 app.post("/createUser", async (request, response) => {
-  const { username, email, password } = request.body;
-
+  
   try {
+    const { username, email, password } = request.body;
     // Check if username or email already exists
     const existingUser = await UserModel.findOne({
       $or: [{ email }],
@@ -139,18 +139,22 @@ app.post("/createUser", async (request, response) => {
     if (existingUser) {
       return response
         .status(400)
-        .json({ message: "Username or Email already exists" });
+        .json({ message: "Email already exists" });
     }
 
     // Hash the password before saving
     const hashedPassword = await bcrypt.hash(password, 10);
-
+    console.log(username, email, hashedPassword)
     // Create the user with hashed password
     UserModel.create({
       username: username,
       email: email,
       password: hashedPassword,
-    }).then((gamers) => response.status(201).json(gamers));
+    }).then((gamers) => {
+      console.log(gamers);
+      response.status(200).json(gamers)
+      
+    });
   } catch (err) {
     console.error(err);
     response.status(500).json({ message: "Server error", error: err });
@@ -209,12 +213,11 @@ app.post("/profile/:id", async (req, res) => {
       universityDetails,
     } = req.body;
 
-    // Assuming the user is logged in, and you have their user ID available (e.g., from a session or JWT)
     const { id } = req.params; // Replace with actual user ID logic
 
     // Find the user and update the profile
     const user = await UserModel.findById(id);
-
+    console.log(user)
     if (!user) {
       return res
         .status(404)
@@ -234,7 +237,7 @@ app.post("/profile/:id", async (req, res) => {
 
     await user.save();
 
-    return res.status(201).json(user);
+    return res.status(200).json(user);
   } catch (error) {
     console.error("Error updating profile:", error);
     return res
@@ -354,15 +357,16 @@ function calculateDaysUntilExam(examDateStr) {
 }
 
 const datevalue = calculateDaysUntilExam("2025-01-04");
-console.log(datevalue);
+// console.log(datevalue);
 
-app.post("/query/:id", upload.single("pdfFile"), async (req, res) => {
+app.post("/query/:id", async (req, res) => {
+  console.log(req.body)
   const { examDate, subjects } = req.body;
   const { id } = req.params;
-  const pdfFile = req.file;
-
-  console.log("Uploaded PDF:", pdfFile);
+  // const pdfFile = req.file;
+  // console.log("Uploaded PDF:", pdfFile);
   console.log("Subjects type:", typeof subjects);
+  const pdfFile = false
 
   try {
     const user = await UserModel.findById(id);

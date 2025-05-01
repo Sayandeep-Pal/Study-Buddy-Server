@@ -84,6 +84,6 @@ const UserSchema = new mongoose.Schema({
 });
 
 // Create the User model
-const UserModel = mongoose.model("Study-AI", UserSchema);
+const UserModel = mongoose.model("StudyBuddy-AI", UserSchema);
 
 module.exports = UserModel;
