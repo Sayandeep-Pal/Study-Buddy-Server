@@ -516,7 +516,7 @@ app.post("/query/:id", async (req, res) => {
     // Call Groq model with the generated prompt
     const chatCompletion = await groq.chat.completions.create({
       messages: [{ role: "user", content: prompt }],
-      model: "llama3-8b-8192", // Specifying the model here
+      model: "llama-3.3-70b-versatile", // Specifying the model here
       temperature: 0.7,
       // topP: 1,
       frequency_penalty: 0,
